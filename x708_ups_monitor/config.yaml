@@ -1,0 +1,51 @@
+name: "X708 UPS Monitor"
+version: "1.0.0"
+slug: "x708_ups_monitor"
+description: "Surveillance de la batterie du HAT Geekworm X708 (voltage, %) et arrêt automatique du Raspberry Pi en cas de batterie faible"
+url: "https://github.com/votre-utilisateur/ha-addon-x708"
+arch:
+  - aarch64
+  - armv7
+  - armhf
+startup: system
+boot: auto
+init: false
+
+# Accès à l'API Supervisor (pour créer les capteurs et déclencher l'arrêt)
+hassio_api: true
+homeassistant_api: true
+
+# Accès matériel : bus I2C (lecture de la puce de jauge de batterie MAX17040)
+# et GPIO (pour l'impulsion d'extinction matérielle, comme xSoft.sh)
+devices:
+  - /dev/i2c-1
+  - /dev/gpiochip0
+  - /dev/gpiochip4
+
+full_access: false
+privileged:
+  - SYS_RAWIO
+
+map: []
+
+options:
+  i2c_bus: 1
+  i2c_address: "0x36"
+  poll_interval: 30
+  low_battery_threshold: 25
+  shutdown_threshold: 15
+  gpio_chip: "gpiochip0"
+  gpio_shutdown_pin: 13
+  enable_gpio_shutdown_pulse: true
+  sensor_prefix: "x708"
+
+schema:
+  i2c_bus: int(0,10)
+  i2c_address: str
+  poll_interval: int(5,600)
+  low_battery_threshold: int(5,90)
+  shutdown_threshold: int(3,50)
+  gpio_chip: str
+  gpio_shutdown_pin: int(0,40)
+  enable_gpio_shutdown_pulse: bool
+  sensor_prefix: str
